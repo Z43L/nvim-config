@@ -1,0 +1,226 @@
+/* Tokyo Night Dark Theme — Fondo UNIFORME #1a1b26 en toda la página */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+/* Forzar fondo uniforme en absolutamente TODO */
+html, body, #page, #page-content, .markdown-body, article, main, section, header, footer, nav, aside, div {
+  background-color: #1a1b26 !important;
+  color: #a9b1d6;
+}
+
+html {
+  width: 100%;
+  min-height: 100vh;
+}
+
+body {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 15px;
+  line-height: 1.7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Contenedor principal: ancho máximo mayor, centrado, SIN fondo propio */
+.markdown-body,
+#page-content,
+article,
+main {
+  width: 100%;
+  max-width: 1100px;
+  padding: 2rem 3rem;
+  margin: 0 auto;
+  box-sizing: border-box;
+  background-color: transparent !important;
+}
+
+/* Eliminar margen superior del primer elemento para que no haya espacio en blanco arriba */
+.markdown-body > *:first-child,
+#page-content > *:first-child,
+article > *:first-child,
+main > *:first-child {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  line-height: 1.3;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+  background-color: transparent !important;
+}
+
+h1 { color: #f7768e; font-size: 2.2rem; border-bottom: 1px solid #24283b; padding-bottom: 0.5rem; }
+h2 { color: #ff9e64; font-size: 1.8rem; border-bottom: 1px solid #24283b; padding-bottom: 0.3rem; }
+h3 { color: #e0af68; font-size: 1.5rem; }
+h4 { color: #9ece6a; font-size: 1.3rem; }
+h5 { color: #7aa2f7; font-size: 1.15rem; }
+h6 { color: #ad8ee6; font-size: 1rem; }
+
+/* Paragraphs */
+p {
+  margin-bottom: 1.2rem;
+  background-color: transparent !important;
+}
+
+/* Links */
+a {
+  color: #7aa2f7;
+  text-decoration: none;
+  border-bottom: 1px dotted #565f89;
+  transition: color 0.2s, border-color 0.2s;
+  background-color: transparent !important;
+}
+
+a:hover {
+  color: #bb9af7;
+  border-bottom-color: #bb9af7;
+}
+
+/* Code inline */
+code {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  color: #e0af68;
+  font-size: 0.9em;
+  background-color: transparent !important;
+  padding: 0.2em 0.4em;
+}
+
+/* Code blocks */
+pre {
+  border: 1px solid #24283b;
+  border-radius: 8px;
+  padding: 1.2rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  background-color: #1a1b26 !important;
+}
+
+pre code {
+  background-color: transparent !important;
+  color: #c0caf5;
+  padding: 0;
+  border: none;
+  font-size: 0.85em;
+  line-height: 1.6;
+}
+
+/* Blockquotes */
+blockquote {
+  border-left: 3px solid #7aa2f7;
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 0 8px 8px 0;
+  color: #a9b1d6;
+  background-color: #1a1b26 !important;
+}
+
+blockquote p:last-child { margin-bottom: 0; }
+
+/* Lists */
+ul, ol {
+  margin-bottom: 1.2rem;
+  padding-left: 2rem;
+  background-color: transparent !important;
+}
+
+li { margin-bottom: 0.4rem; background-color: transparent !important; }
+li::marker { color: #7aa2f7; }
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: transparent !important;
+}
+
+th {
+  color: #f7768e;
+  font-weight: 600;
+  padding: 0.8rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #24283b;
+  background-color: #1a1b26 !important;
+}
+
+td {
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid #24283b;
+  color: #a9b1d6;
+  background-color: #1a1b26 !important;
+}
+
+/* Horizontal rule */
+hr {
+  border: none;
+  height: 1px;
+  background-color: #24283b;
+  margin: 2.5rem 0;
+}
+
+/* Images */
+img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
+/* Task lists */
+input[type="checkbox"] {
+  appearance: none;
+  width: 1.1em;
+  height: 1.1em;
+  border: 2px solid #7aa2f7;
+  border-radius: 3px;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
+  background-color: #1a1b26 !important;
+}
+
+input[type="checkbox"]:checked {
+  background-color: #9ece6a !important;
+  border-color: #9ece6a;
+}
+
+input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 0px;
+  width: 5px;
+  height: 9px;
+  border: solid #1a1b26;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1b26;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #414868;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #565f89;
+}

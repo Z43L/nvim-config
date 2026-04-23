@@ -1,0 +1,111 @@
+/* Tokyo Night Dark Syntax Highlighting for Markdown Preview */
+.hljs { color: #c0caf5; background: #1a1b26; }
+
+/* Comments */
+.hljs-comment,
+.hljs-quote { color: #565f89; font-style: italic; }
+
+/* Variables, parameters */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag .hljs-attr { color: #f7768e; }
+
+/* Numbers, literals */
+.hljs-number,
+.hljs-literal,
+.hljs-built_in { color: #ff9e64; }
+
+/* Types, attributes */
+.hljs-type,
+.hljs-class .hljs-title,
+.hljs-attribute { color: #e0af68; }
+
+/* Strings, symbols */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition { color: #9ece6a; }
+
+/* Titles, functions */
+.hljs-title,
+.hljs-section,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class { color: #7aa2f7; }
+
+/* Keywords, selectors */
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-regexp { color: #bb9af7; }
+
+/* Operators, punctuation */
+.hljs-operator,
+.hljs-punctuation { color: #89ddff; }
+
+/* Functions, methods */
+.hljs-function .hljs-title,
+.hljs-method .hljs-title { color: #7aa2f7; }
+
+/* Meta, preprocessor */
+.hljs-meta { color: #565f89; }
+.hljs-meta-string { color: #9ece6a; }
+.hljs-meta-keyword { color: #bb9af7; }
+
+/* Deletion, emphasis */
+.hljs-deletion { color: #f7768e; background: #3b2d2d; }
+.hljs-emphasis { font-style: italic; }
+.hljs-strong { font-weight: bold; color: #f7768e; }
+
+/* Diff */
+.hljs-diff .hljs-addition { color: #9ece6a; }
+.hljs-diff .hljs-deletion { color: #f7768e; }
+
+/* Specific language tweaks */
+/* Python */
+.hljs.python .hljs-keyword { color: #bb9af7; }
+.hljs.python .hljs-string { color: #9ece6a; }
+
+/* JavaScript / TypeScript */
+.hljs.javascript .hljs-keyword,
+.hljs.typescript .hljs-keyword { color: #bb9af7; }
+.hljs.javascript .hljs-string,
+.hljs.typescript .hljs-string { color: #9ece6a; }
+.hljs.javascript .hljs-number,
+.hljs.typescript .hljs-number { color: #ff9e64; }
+
+/* Go */
+.hljs.go .hljs-keyword { color: #bb9af7; }
+.hljs.go .hljs-string { color: #9ece6a; }
+
+/* Rust */
+.hljs.rust .hljs-keyword { color: #bb9af7; }
+.hljs.rust .hljs-string { color: #9ece6a; }
+
+/* C / C++ */
+.hljs.c .hljs-keyword,
+.hljs.cpp .hljs-keyword { color: #bb9af7; }
+.hljs.c .hljs-string,
+.hljs.cpp .hljs-string { color: #9ece6a; }
+
+/* Java */
+.hljs.java .hljs-keyword { color: #bb9af7; }
+.hljs.java .hljs-string { color: #9ece6a; }
+
+/* Lua */
+.hljs.lua .hljs-keyword { color: #bb9af7; }
+.hljs.lua .hljs-string { color: #9ece6a; }
+
+/* Line numbers */
+.hljs-ln-numbers {
+  color: #565f89;
+  border-right: 1px solid #24283b;
+  padding-right: 1rem;
+  margin-right: 1rem;
+}
+
+/* Inline code within highlights */
+.hljs code {
+  background: transparent;
+  padding: 0;
+  border: none;
+}
