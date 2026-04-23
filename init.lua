@@ -569,6 +569,10 @@ local silent = { noremap = true, silent = true }
 map('n', '<leader>e', require('nvim-tree.api').tree.toggle, silent)
 map('n', '<leader>w', '<cmd>w<CR>', silent)
 map('n', '<leader>q', '<cmd>q<CR>', silent)
+map('n', '<leader>et', function() require('filecreator').create_file() end,
+    vim.tbl_extend('force', silent, { desc = 'Crear archivo (popup)' }))
+map('n', '<leader>ek', function() require('filecreator').create_dir() end,
+    vim.tbl_extend('force', silent, { desc = 'Crear directorio (popup)' }))
 
 -- Telescope
 map('n', '<leader>ff', '<cmd>Telescope find_files<CR>', silent)
@@ -666,6 +670,9 @@ wk.add({
     { '<leader>g',  group = 'Git' },
     { '<leader>x',  group = 'Diagnostics (Trouble)' },
     { '<leader>s',  group = 'Sessions' },
+    { '<leader>e',  group = 'File' },
+    { '<leader>et', desc = 'Crear archivo (popup)' },
+    { '<leader>ek', desc = 'Crear directorio (popup)' },
     { '<leader>p',  group = 'Ollama' },
     { '<leader>pp', desc = 'Projects (Telescope)' },
     { '<leader>o',  group = 'Ollama Config' },
@@ -850,6 +857,8 @@ vim.keymap.set("n", "<leader>ah", function()
     " <leader>w        Guardar archivo",
     " <leader>q        Cerrar ventana/buffer",
     " <leader>e        Abrir/Cerrar Explorador de Archivos (NvimTree)",
+    " <leader>et       Crear archivo (popup con TAB-completion)",
+    " <leader>ek       Crear directorio (popup con TAB-completion)",
     " ",
     " [BUSCADOR (TELESCOPE)]",
     " <leader>ff       Buscar archivos (Find Files)",
