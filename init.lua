@@ -660,13 +660,13 @@ map('n', '<leader>sd', function() require('snippets').delete() end, vim.tbl_exte
 map('n', '<leader>dg', function() require('neogen').generate() end, vim.tbl_extend('force', silent, { desc = 'Generar docstring' }))
 
 -- Neovim config git sync
-map('n', '<leader>Ns', function() require('nvimgit').status() end, vim.tbl_extend('force', silent, { desc = 'Git: Status' }))
-map('n', '<leader>Na', function() require('nvimgit').add_all() end, vim.tbl_extend('force', silent, { desc = 'Git: Add all' }))
-map('n', '<leader>Nc', function() require('nvimgit').commit() end, vim.tbl_extend('force', silent, { desc = 'Git: Commit' }))
-map('n', '<leader>Np', function() require('nvimgit').push() end, vim.tbl_extend('force', silent, { desc = 'Git: Push' }))
-map('n', '<leader>Nl', function() require('nvimgit').pull() end, vim.tbl_extend('force', silent, { desc = 'Git: Pull' }))
-map('n', '<leader>Ny', function() require('nvimgit').sync() end, vim.tbl_extend('force', silent, { desc = 'Git: Sync (pull+commit+push)' }))
-map('n', '<leader>Nq', function() require('nvimgit').safe_quit() end, vim.tbl_extend('force', silent, { desc = 'Git: Guardar, sync y salir' }))
+map('n', '<leader>ns', function() require('nvimgit').status() end, vim.tbl_extend('force', silent, { desc = 'Git: Status' }))
+map('n', '<leader>na', function() require('nvimgit').add_all() end, vim.tbl_extend('force', silent, { desc = 'Git: Add all' }))
+map('n', '<leader>nc', function() require('nvimgit').commit() end, vim.tbl_extend('force', silent, { desc = 'Git: Commit' }))
+map('n', '<leader>np', function() require('nvimgit').push() end, vim.tbl_extend('force', silent, { desc = 'Git: Push' }))
+map('n', '<leader>nl', function() require('nvimgit').pull() end, vim.tbl_extend('force', silent, { desc = 'Git: Pull' }))
+map('n', '<leader>ny', function() require('nvimgit').sync() end, vim.tbl_extend('force', silent, { desc = 'Git: Sync (pull+commit+push)' }))
+map('n', '<leader>nq', function() require('nvimgit').safe_quit() end, vim.tbl_extend('force', silent, { desc = 'Git: Guardar, sync y salir' }))
 
 -- Which-key labels
 local wk = require('which-key')
@@ -695,14 +695,14 @@ wk.add({
     { '<leader>se', desc = 'Snippets: Editar archivo' },
     { '<leader>sd', desc = 'Snippets: Borrar' },
     { '<leader>dg', desc = 'Generar docstring (neogen)' },
-    { '<leader>N',  group = 'Nvim Config (Git)' },
-    { '<leader>Ns', desc = 'Git: Status' },
-    { '<leader>Na', desc = 'Git: Add all' },
-    { '<leader>Nc', desc = 'Git: Commit' },
-    { '<leader>Np', desc = 'Git: Push' },
-    { '<leader>Nl', desc = 'Git: Pull' },
-    { '<leader>Ny', desc = 'Git: Sync (full)' },
-    { '<leader>Nq', desc = 'Git: Guardar, sync y salir' },
+    { '<leader>n',  group = 'Nvim Config (Git)' },
+    { '<leader>ns', desc = 'Git: Status' },
+    { '<leader>na', desc = 'Git: Add all' },
+    { '<leader>nc', desc = 'Git: Commit' },
+    { '<leader>np', desc = 'Git: Push' },
+    { '<leader>nl', desc = 'Git: Pull' },
+    { '<leader>ny', desc = 'Git: Sync (full)' },
+    { '<leader>nq', desc = 'Git: Guardar, sync y salir' },
 })
 
 -- =====================================================================
@@ -925,13 +925,13 @@ vim.keymap.set("n", "<leader>ah", function()
     " :Leet            Abrir Dashboard",
     " ",
     " [NVIM CONFIG (GIT)]",
-    " <leader>Ns       Git status",
-    " <leader>Na       Git add all",
-    " <leader>Nc       Git commit",
-    " <leader>Np       Git push",
-    " <leader>Nl       Git pull",
-    " <leader>Ny       Git sync (pull+commit+push)",
-    " <leader>Nq       Guardar todo, sync git y salir de Neovim",
+    " <leader>ns       Git status",
+    " <leader>na       Git add all",
+    " <leader>nc       Git commit",
+    " <leader>np       Git push",
+    " <leader>nl       Git pull",
+    " <leader>ny       Git sync (pull+commit+push)",
+    " <leader>nq       Guardar todo, sync git y salir de Neovim",
     " ",
     " [SESIONES & TERMINAL]",
     " <leader>ss       Restaurar sesión actual",
