@@ -297,6 +297,74 @@ function M.pick()
 end
 
 -- ============================================================================
+-- Delete snippet
+-- ============================================================================
+
+function M.delete()
+    require('luasnip.loaders.from_lua').load({ paths = snippets_dir })
+
+    local snippets = collect_all_snippets()
+    if #snippets == 0 then
+        vim.notify('No hay snippets guardados', vim.log.levels.WARN)
+        return
+    end
+
+    table.sort(snippets, function(a, b)
+        if a.ft ~= b.ft then return a.ft < b.ft end
+        return a.name < b.name
+    end)
+
+    vim.ui.select(snippets, {
+        prompt = 'Borrar snippet:',
+        format_item = function(item)
+            return string.format('[%s] %s (%s)', item.ft, item.name, item.trigger)
+        end,
+    }, function(choice)
+        if not choice then return end
+
+        -- Confirmar borrado (sincrono)
+        local confirm = vim.fn.confirm(
+            'Borrar snippet "' .. choice.name .. '"?',
+            'Si\nNo',
+            2
+        )
+        if confirm ~= 1 then
+            vim.notify('Borrado cancelado', vim.log.levels.INFO)
+            return
+        end
+
+        -- Leer archivo
+        local lines = vim.fn.readfile(choice.path)
+
+        -- Eliminar lineas del snippet (de start_line a end_line)
+        for i = choice.end_line, choice.start_line, -1 do
+            table.remove(lines, i)
+        end
+
+        -- Verificar si queda algun snippet
+        local has_snippets = false
+        for _, line in ipairs(lines) do
+            if line:match('^%s*s%(') then
+                has_snippets = true
+                break
+            end
+        end
+
+        if has_snippets then
+            vim.fn.writefile(lines, choice.path)
+        else
+            -- Borrar archivo si queda vacio
+            vim.fn.delete(choice.path)
+        end
+
+        -- Recargar snippets
+        require('luasnip.loaders.from_lua').load({ paths = snippets_dir })
+
+        vim.notify('Snippet "' .. choice.name .. '" borrado', vim.log.levels.INFO)
+    end)
+end
+
+-- ============================================================================
 -- Edit snippets file for current filetype
 -- ============================================================================
 

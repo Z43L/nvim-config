@@ -654,6 +654,7 @@ map('v', '<leader>ci', '<cmd>CodeCompanionInline<CR>', silent)
 map('v', '<leader>sy', function() require('snippets').save_visual() end, vim.tbl_extend('force', silent, { desc = 'Snippets: Guardar selección' }))
 map('n', '<leader>sp', function() require('snippets').pick() end, vim.tbl_extend('force', silent, { desc = 'Snippets: Buscar y expandir' }))
 map('n', '<leader>se', function() require('snippets').edit() end, vim.tbl_extend('force', silent, { desc = 'Snippets: Editar archivo' }))
+map('n', '<leader>sd', function() require('snippets').delete() end, vim.tbl_extend('force', silent, { desc = 'Snippets: Borrar' }))
 
 -- Docstring generator (neogen)
 map('n', '<leader>dg', function() require('neogen').generate() end, vim.tbl_extend('force', silent, { desc = 'Generar docstring' }))
@@ -665,6 +666,7 @@ map('n', '<leader>Nc', function() require('nvimgit').commit() end, vim.tbl_exten
 map('n', '<leader>Np', function() require('nvimgit').push() end, vim.tbl_extend('force', silent, { desc = 'Git: Push' }))
 map('n', '<leader>Nl', function() require('nvimgit').pull() end, vim.tbl_extend('force', silent, { desc = 'Git: Pull' }))
 map('n', '<leader>Ny', function() require('nvimgit').sync() end, vim.tbl_extend('force', silent, { desc = 'Git: Sync (pull+commit+push)' }))
+map('n', '<leader>Nq', function() require('nvimgit').safe_quit() end, vim.tbl_extend('force', silent, { desc = 'Git: Guardar, sync y salir' }))
 
 -- Which-key labels
 local wk = require('which-key')
@@ -691,6 +693,7 @@ wk.add({
     { '<leader>sy', desc = 'Snippets: Guardar selección' },
     { '<leader>sp', desc = 'Snippets: Buscar y expandir' },
     { '<leader>se', desc = 'Snippets: Editar archivo' },
+    { '<leader>sd', desc = 'Snippets: Borrar' },
     { '<leader>dg', desc = 'Generar docstring (neogen)' },
     { '<leader>N',  group = 'Nvim Config (Git)' },
     { '<leader>Ns', desc = 'Git: Status' },
@@ -699,6 +702,7 @@ wk.add({
     { '<leader>Np', desc = 'Git: Push' },
     { '<leader>Nl', desc = 'Git: Pull' },
     { '<leader>Ny', desc = 'Git: Sync (full)' },
+    { '<leader>Nq', desc = 'Git: Guardar, sync y salir' },
 })
 
 -- =====================================================================
@@ -911,6 +915,7 @@ vim.keymap.set("n", "<leader>ah", function()
     " <leader>sy       Guardar selección como snippet (modo visual)",
     " <leader>sp       Buscar snippet (popup editable: c copiar, Enter insertar)",
     " <leader>se       Editar archivo de snippets del filetype",
+    " <leader>sd       Borrar snippet (picker + confirm)",
     " ",
     " [DOCSTRINGS]",
     " <leader>dg       Generar docstring (Python/C/C++/Java/JS/Go...)",
@@ -926,6 +931,7 @@ vim.keymap.set("n", "<leader>ah", function()
     " <leader>Np       Git push",
     " <leader>Nl       Git pull",
     " <leader>Ny       Git sync (pull+commit+push)",
+    " <leader>Nq       Guardar todo, sync git y salir de Neovim",
     " ",
     " [SESIONES & TERMINAL]",
     " <leader>ss       Restaurar sesión actual",

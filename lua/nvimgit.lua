@@ -144,4 +144,62 @@ function M.sync()
     end)
 end
 
+---Safe quit: save all, sync if needed, then quit
+function M.safe_quit()
+    -- 1. Save all buffers
+    vim.cmd('wa')
+    vim.notify('Todos los buffers guardados', vim.log.levels.INFO)
+
+    -- 2. Check if there are git changes
+    local ok_status, status_out = git_cmd('status --porcelain')
+    if not ok_status then
+        vim.notify('Error verificando git status:\n' .. status_out, vim.log.levels.ERROR)
+        return
+    end
+
+    local has_changes = status_out:match('%S')
+
+    if has_changes then
+        -- Ask for commit message (synchronous)
+        local msg = vim.fn.input('Mensaje del commit: ')
+        if msg == '' then
+            vim.notify('Safe quit cancelado: mensaje vacio', vim.log.levels.WARN)
+            return
+        end
+
+        vim.notify('Sincronizando y cerrando...', vim.log.levels.INFO)
+
+        -- Pull
+        local ok1, out1 = git_cmd('pull origin $(git rev-parse --abbrev-ref HEAD)')
+        if not ok1 then
+            vim.notify('Error en pull:\n' .. out1, vim.log.levels.ERROR)
+            return
+        end
+
+        -- Add
+        git_cmd('add -A')
+
+        -- Commit
+        local ok3, out3 = git_cmd('commit -m ' .. vim.fn.shellescape(msg))
+        if not ok3 then
+            if not (out3:match('nothing to commit') or out3:match('working tree clean')) then
+                vim.notify('Error en commit:\n' .. out3, vim.log.levels.ERROR)
+                return
+            end
+        end
+
+        -- Push
+        local ok4, out4 = git_cmd('push origin $(git rev-parse --abbrev-ref HEAD)')
+        if ok4 then
+            vim.notify('Sync completado! Cerrando Neovim...', vim.log.levels.INFO)
+        else
+            vim.notify('Error en push:\n' .. out4, vim.log.levels.ERROR)
+            return
+        end
+    end
+
+    -- 3. Quit Neovim
+    vim.cmd('qa')
+end
+
 return M
