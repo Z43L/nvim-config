@@ -206,7 +206,11 @@ require('lazy').setup({
                     action = 'display',
                 },
             },
-        }
+        },
+        config = function(_, opts)
+            require('ollama').setup(opts)
+            require('ollama_config').init()
+        end,
     },
 
     -- CodeCompanion + Ollama
