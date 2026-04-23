@@ -81,14 +81,21 @@ function M.load_config()
   if json then
     if json.mode      ~= nil then M._state.mode      = json.mode end
     if json.local_url ~= nil then M._state.local_url = json.local_url end
-    if json.cloud_url ~= nil and #json.cloud_url > 0 then M._state.cloud_url = json.cloud_url end
     if json.model     ~= nil then M._state.model     = json.model end
+    -- cloud_url: ignorar vacías o la antigua URL incorrecta
+    if json.cloud_url and #json.cloud_url > 0
+       and not json.cloud_url:match("api%.ollama%.ai")
+       and not json.cloud_url:match("^%s*$") then
+      M._state.cloud_url = json.cloud_url
+    end
   end
 
-  -- .env secrets
+  -- .env secrets (tienen prioridad sobre JSON)
   local env = read_env()
   if env.OLLAMA_API_KEY   then M._state.api_key   = env.OLLAMA_API_KEY end
-  if env.OLLAMA_CLOUD_URL then M._state.cloud_url = env.OLLAMA_CLOUD_URL end
+  if env.OLLAMA_CLOUD_URL and #env.OLLAMA_CLOUD_URL > 0 then
+    M._state.cloud_url = env.OLLAMA_CLOUD_URL
+  end
 end
 
 function M.save_config()
