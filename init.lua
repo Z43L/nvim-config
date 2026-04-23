@@ -162,56 +162,8 @@ require('lazy').setup({
     -- LSP progress
     { 'j-hui/fidget.nvim',   opts = {} },
 
-    -- Ollama (local AI)
-    {
-        'nomnivore/ollama.nvim',
-        dependencies = { 'nvim-lua/plenary.nvim' },
-        opts = {
-            model = 'devstral-2:123b-cloud',
-            prompt = '> ',
-            accept_keymap = '<C-y>',
-            chat_separator = '────────────────────────────',
-            mappings = { send = '<C-y>', close = '<Esc>' },
-            options = {
-                num_ctx = 2048,
-                num_predict = 512,
-                temperature = 0.6,
-                top_p = 0.9,
-            },
-            prompts = {
-                Ask_About_Code = {
-                    prompt =
-                    [[Eres un experto. Responde preguntas sobre el código seleccionado ($sel) o, si no hay selección, sobre el buffer. Pregunta: $input]],
-                    input_label = 'Q> ',
-                    action = 'display',
-                },
-                Explain_Code = {
-                    prompt = [[Explica claramente qué hace este código: $sel]],
-                    action = 'display',
-                },
-                Generate_Code = {
-                    prompt = [[Genera el código solicitado: $input. Si hay contexto: $sel]],
-                    action = 'display',
-                },
-                Modify_Code = {
-                    prompt = [[Refactoriza o modifica el siguiente código según: $input. Código: $sel]],
-                    action = 'replace',
-                },
-                Simplify_Code = {
-                    prompt = [[Simplifica el siguiente código manteniendo la funcionalidad: $sel]],
-                    action = 'replace',
-                },
-                Raw = {
-                    prompt = [[$input]],
-                    action = 'display',
-                },
-            },
-        },
-        config = function(_, opts)
-            require('ollama').setup(opts)
-            require('ollama_config').init()
-        end,
-    },
+    -- Ollama (vendoreado en lua/ollama/ — ver config debajo de lazy.setup)
+    -- { 'nomnivore/ollama.nvim', enabled = false },
 
     -- CodeCompanion + Ollama
     {
@@ -435,6 +387,52 @@ require('lazy').setup({
     checker = { enabled = true, notify = false },
     change_detection = { notify = false },
 })
+
+-- ---------------------------------------------------------------------
+-- Ollama (vendoreado en lua/ollama/)
+-- ---------------------------------------------------------------------
+require('ollama').setup({
+    model = 'devstral-2:123b-cloud',
+    prompt = '> ',
+    accept_keymap = '<C-y>',
+    chat_separator = '────────────────────────────',
+    mappings = { send = '<C-y>', close = '<Esc>' },
+    options = {
+        num_ctx = 2048,
+        num_predict = 512,
+        temperature = 0.6,
+        top_p = 0.9,
+    },
+    prompts = {
+        Ask_About_Code = {
+            prompt =
+            [[Eres un experto. Responde preguntas sobre el código seleccionado ($sel) o, si no hay selección, sobre el buffer. Pregunta: $input]],
+            input_label = 'Q> ',
+            action = 'display',
+        },
+        Explain_Code = {
+            prompt = [[Explica claramente qué hace este código: $sel]],
+            action = 'display',
+        },
+        Generate_Code = {
+            prompt = [[Genera el código solicitado: $input. Si hay contexto: $sel]],
+            action = 'display',
+        },
+        Modify_Code = {
+            prompt = [[Refactoriza o modifica el siguiente código según: $input. Código: $sel]],
+            action = 'replace',
+        },
+        Simplify_Code = {
+            prompt = [[Simplifica el siguiente código manteniendo la funcionalidad: $sel]],
+            action = 'replace',
+        },
+        Raw = {
+            prompt = [[$input]],
+            action = 'display',
+        },
+    },
+})
+require('ollama_config').init()
 
 -- ---------------------------------------------------------------------
 -- Colorscheme

@@ -131,100 +131,9 @@ function M.apply_to_ollama()
   if M._state.model then
     ollama.config.model = M._state.model
   end
-end
-
--- ============================================================================
--- Monkey-patch: fix parse_prompt (start_col > end_col bug)
--- ============================================================================
-function M.patch_parse_prompt()
-  local ok, ollama = pcall(require, "ollama")
-  if not ok then return end
-
-  -- Try debug.upvalue on ollama.prompt
-  local orig_prompt = ollama.prompt
-  local patched = false
-
-  local idx = 1
-  while true do
-    local name, val = debug.getupvalue(orig_prompt, idx)
-    if not name then break end
-    if name == "parse_prompt" and type(val) == "function" then
-      debug.setupvalue(orig_prompt, idx, function(prompt)
-        local s = vim.fn.getpos("'<")
-        local e = vim.fn.getpos("'>")
-        if s[2] > 0 and e[2] > 0 then
-          if s[2] > e[2] or (s[2] == e[2] and s[3] > e[3]) then
-            vim.fn.setpos("'<", { 0, e[2], e[3], 0 })
-            vim.fn.setpos("'>", { 0, s[2], s[3], 0 })
-          end
-        end
-        return val(prompt)
-      end)
-      patched = true
-      break
-    end
-    idx = idx + 1
+  if M._state.api_key then
+    ollama.config.api_key = M._state.api_key
   end
-
-  if not patched then
-    -- Fallback: wrap ollama.prompt itself
-    ollama.prompt = function(...)
-      local s = vim.fn.getpos("'<")
-      local e = vim.fn.getpos("'>")
-      if s[2] > 0 and e[2] > 0 then
-        if s[2] > e[2] or (s[2] == e[2] and s[3] > e[3]) then
-          vim.fn.setpos("'<", { 0, e[2], e[3], 0 })
-          vim.fn.setpos("'>", { 0, s[2], s[3], 0 })
-        end
-      end
-      return orig_prompt(...)
-    end
-  end
-end
-
--- ============================================================================
--- Monkey-patch: inject auth headers into plenary.curl for our endpoints
--- ============================================================================
-function M.patch_curl()
-  local ok, curl = pcall(require, "plenary.curl")
-  if not ok then return end
-  if curl._ollama_patched then return end
-
-  local orig_get  = curl.get
-  local orig_post = curl.post
-  local me = M
-
-  -- Returns true if url belongs to our configured endpoint (local or cloud)
-  local function is_our_endpoint(url)
-    if not url or type(url) ~= "string" then return false end
-    local active = me.get_url()
-    if active and #active > 0 and vim.startswith(url, active) then
-      return true
-    end
-    return false
-  end
-
-  curl.get = function(url, opts)
-    if is_our_endpoint(url) then
-      local h = me.get_headers()
-      if h then
-        opts = vim.tbl_deep_extend("force", opts or {}, { headers = h })
-      end
-    end
-    return orig_get(url, opts)
-  end
-
-  curl.post = function(url, opts)
-    if is_our_endpoint(url) then
-      local h = me.get_headers()
-      if h then
-        opts = vim.tbl_deep_extend("force", opts or {}, { headers = h })
-      end
-    end
-    return orig_post(url, opts)
-  end
-
-  curl._ollama_patched = true
 end
 
 -- ============================================================================
@@ -374,13 +283,11 @@ function M.configure()
 end
 
 -- ============================================================================
--- Init: load + patch + apply
+-- Init: load + apply
 -- ============================================================================
 function M.init()
   M.load_config()
   M.apply_to_ollama()
-  M.patch_parse_prompt()
-  M.patch_curl()
 end
 
 return M
