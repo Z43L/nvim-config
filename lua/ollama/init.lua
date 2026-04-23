@@ -214,15 +214,18 @@ local function parse_prompt(prompt)
         local buf_nr = vim.fn.bufnr("%")
 
         if buf_nr ~= -1 then
-            local sel_buf_text = vim.api.nvim_buf_get_text(
-            ---@diagnostic disable-next-line: param-type-mismatch
-                buf_nr,
-                sel_start[2] - 1,
-                sel_start[3] - 1,
-                sel_end[2] - 1,
-                sel_end[3], -- end_col is exclusive
-                {}
-            )
+            -- Guard against invalid ranges (backwards selection, stale marks, etc.)
+            local sr = math.max(0, sel_start[2] - 1)
+            local sc = math.max(0, sel_start[3] - 1)
+            local er = math.max(0, sel_end[2] - 1)
+            local ec = math.max(0, sel_end[3])
+            if sr > er then
+                sr, er = er, sr
+                sc, ec = ec, sc
+            elseif sr == er and sc > ec then
+                sc, ec = ec, sc
+            end
+            local sel_buf_text = vim.api.nvim_buf_get_text(buf_nr, sr, sc, er, ec, {})
             sel_text = table.concat(sel_buf_text, "\n")
         else
             sel_text = "No Buffer Found"

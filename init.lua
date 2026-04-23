@@ -565,19 +565,6 @@ cmp.setup.cmdline(':', {
 local map = vim.keymap.set
 local silent = { noremap = true, silent = true }
 
--- Normaliza la selección visual (evita rangos invertidos que rompen ollama.nvim)
-local function with_norm_vis(cmd)
-    return function()
-        local _, ls, cs = unpack(vim.fn.getpos("'<"))
-        local _, le, ce = unpack(vim.fn.getpos("'>"))
-        if ls > le or (ls == le and cs > ce) then
-            vim.fn.setpos("'<", { 0, le, ce, 0 })
-            vim.fn.setpos("'>", { 0, ls, cs, 0 })
-        end
-        vim.cmd(cmd)
-    end
-end
-
 -- File explorer & files
 map('n', '<leader>e', require('nvim-tree.api').tree.toggle, silent)
 map('n', '<leader>w', '<cmd>w<CR>', silent)
@@ -633,20 +620,14 @@ map('n', '<leader>sl', function() require('persistence').load({ last = true }) e
 map('n', '<leader>sd', function() require('persistence').stop() end, silent)
 
 -- Ollama
--- Abrir selector de prompts de Ollama (Normal y Visual) en <leader>p
--- CORRECCIÓN:
--- Modo Normal (sin cambios)
 map('n', '<leader>p', ":<C-u>lua require('ollama').prompt()<CR>", { silent = true, desc = 'Ollama prompt' })
-
--- Modo Visual (¡Usando la función normalizadora!)
-map('v', '<leader>p', with_norm_vis("lua require('ollama').prompt()"), { silent = true, desc = 'Ollama prompt' })
--- Visual: invoca prompts concretos con selección normalizada
-map('v', '<leader>aa', with_norm_vis("lua require('ollama').prompt('Ask_About_Code')"), { silent = true })
-map('v', '<leader>ee', with_norm_vis("lua require('ollama').prompt('Explain_Code')"), { silent = true })
-map('v', '<leader>gg', with_norm_vis("lua require('ollama').prompt('Generate_Code')"), { silent = true })
-map('v', '<leader>mm', with_norm_vis("lua require('ollama').prompt('Modify_Code')"), { silent = true })
-map('v', '<leader>ss', with_norm_vis("lua require('ollama').prompt('Simplify_Code')"), { silent = true })
-map('v', '<leader>rr', with_norm_vis("lua require('ollama').prompt('Raw')"), { silent = true })
+map('v', '<leader>p', ":<C-u>lua require('ollama').prompt()<CR>", { silent = true, desc = 'Ollama prompt' })
+map('v', '<leader>aa', ":<C-u>lua require('ollama').prompt('Ask_About_Code')<CR>", { silent = true })
+map('v', '<leader>ee', ":<C-u>lua require('ollama').prompt('Explain_Code')<CR>", { silent = true })
+map('v', '<leader>gg', ":<C-u>lua require('ollama').prompt('Generate_Code')<CR>", { silent = true })
+map('v', '<leader>mm', ":<C-u>lua require('ollama').prompt('Modify_Code')<CR>", { silent = true })
+map('v', '<leader>ss', ":<C-u>lua require('ollama').prompt('Simplify_Code')<CR>", { silent = true })
+map('v', '<leader>rr', ":<C-u>lua require('ollama').prompt('Raw')<CR>", { silent = true })
 
 -- Ollama config wrapper
 map('n', '<leader>om', function() require('ollama_config').select_model() end,
