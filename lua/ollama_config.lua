@@ -12,7 +12,7 @@ local ENV_PATH  = vim.fn.stdpath("config") .. "/.env"
 M._state = {
   mode      = "local",
   local_url = "http://127.0.0.1:11434",
-  cloud_url = "https://api.ollama.ai",
+  cloud_url = "",
   api_key   = nil,
   model     = nil,
 }
@@ -108,7 +108,7 @@ function M.get_url()
 end
 
 function M.get_headers()
-  if M._state.mode == "cloud" and M._state.api_key and #M._state.api_key > 0 then
+  if M._state.api_key and #M._state.api_key > 0 then
     return { Authorization = "Bearer " .. M._state.api_key }
   end
   return {}
@@ -176,7 +176,7 @@ function M.patch_parse_prompt()
 end
 
 -- ============================================================================
--- Monkey-patch: inject auth headers into plenary.curl for cloud requests
+-- Monkey-patch: inject auth headers into plenary.curl for our endpoints
 -- ============================================================================
 function M.patch_curl()
   local ok, curl = pcall(require, "plenary.curl")
@@ -187,11 +187,20 @@ function M.patch_curl()
   local orig_post = curl.post
   local me = M
 
+  -- Returns true if url belongs to our configured endpoint (local or cloud)
+  local function is_our_endpoint(url)
+    if not url or type(url) ~= "string" then return false end
+    if me._state.api_key and #me._state.api_key > 0 then
+      local active = me.get_url()
+      if active and #active > 0 and vim.startswith(url, active) then
+        return true
+      end
+    end
+    return false
+  end
+
   curl.get = function(url, opts)
-    if me._state.mode == "cloud"
-       and me._state.api_key
-       and me._state.cloud_url
-       and vim.startswith(url, me._state.cloud_url) then
+    if is_our_endpoint(url) then
       opts = vim.tbl_deep_extend("force", opts or {}, {
         headers = me.get_headers()
       })
@@ -200,10 +209,7 @@ function M.patch_curl()
   end
 
   curl.post = function(url, opts)
-    if me._state.mode == "cloud"
-       and me._state.api_key
-       and me._state.cloud_url
-       and vim.startswith(url, me._state.cloud_url) then
+    if is_our_endpoint(url) then
       opts = vim.tbl_deep_extend("force", opts or {}, {
         headers = me.get_headers()
       })
@@ -218,15 +224,40 @@ end
 -- Fetch available models from active endpoint
 -- ============================================================================
 function M.fetch_models()
-  local url = M.get_url() .. "/api/tags"
+  local active_url = M.get_url()
+  if not active_url or #active_url == 0 then
+    vim.notify("URL no configurada. Usa <leader>oc para configurar el endpoint.", vim.log.levels.ERROR)
+    return {}
+  end
+
+  local url = active_url .. "/api/tags"
   local headers = M.get_headers()
+
   local ok, res = pcall(function()
-    return require("plenary.curl").get(url, { headers = headers })
+    return require("plenary.curl").get(url, { headers = headers, timeout = 10000 })
   end)
-  if not ok or not res or res.status ~= 200 then return {} end
+
+  if not ok then
+    vim.notify("Error de conexión: " .. tostring(res), vim.log.levels.ERROR)
+    return {}
+  end
+
+  if not res then
+    vim.notify("Sin respuesta del servidor", vim.log.levels.ERROR)
+    return {}
+  end
+
+  if res.status ~= 200 then
+    local msg = (res.body and #res.body > 0) and ("HTTP " .. res.status .. ": " .. res.body:sub(1, 200)) or ("HTTP " .. res.status)
+    vim.notify(msg, vim.log.levels.ERROR)
+    return {}
+  end
 
   local decode_ok, body = pcall(vim.json.decode, res.body)
-  if not decode_ok or not body or not body.models then return {} end
+  if not decode_ok or not body or not body.models then
+    vim.notify("Respuesta inválida del endpoint (esperaba JSON con 'models')", vim.log.levels.ERROR)
+    return {}
+  end
 
   local names = {}
   for _, m in ipairs(body.models) do
@@ -241,7 +272,11 @@ end
 function M.select_model()
   local models = M.fetch_models()
   if #models == 0 then
-    vim.notify("No se encontraron modelos en el endpoint activo (" .. M._state.mode .. ")", vim.log.levels.WARN)
+    vim.ui.select({ "Sí", "No" }, {
+      prompt = "No hay modelos. ¿Abrir configuración?",
+    }, function(choice)
+      if choice == "Sí" then M.configure() end
+    end)
     return
   end
 

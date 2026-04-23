@@ -650,6 +650,14 @@ map('v', '<leader>mm', with_norm_vis("lua require('ollama').prompt('Modify_Code'
 map('v', '<leader>ss', with_norm_vis("lua require('ollama').prompt('Simplify_Code')"), { silent = true })
 map('v', '<leader>rr', with_norm_vis("lua require('ollama').prompt('Raw')"), { silent = true })
 
+-- Ollama config wrapper
+map('n', '<leader>om', function() require('ollama_config').select_model() end,
+    vim.tbl_extend('force', silent, { desc = 'Ollama: Seleccionar modelo' }))
+map('n', '<leader>oc', function() require('ollama_config').configure() end,
+    vim.tbl_extend('force', silent, { desc = 'Ollama: Configuración' }))
+map('n', '<leader>ot', function() require('ollama_config').toggle_mode() end,
+    vim.tbl_extend('force', silent, { desc = 'Ollama: Toggle local/cloud' }))
+
 -- CodeCompanion shortcuts
 map('n', '<leader>cc', '<cmd>CodeCompanionChatToggle<CR>', silent)
 map('v', '<leader>ci', '<cmd>CodeCompanionInline<CR>', silent)
@@ -681,6 +689,10 @@ wk.add({
     { '<leader>s',  group = 'Sessions' },
     { '<leader>p',  group = 'Ollama' },
     { '<leader>pp', desc = 'Projects (Telescope)' },
+    { '<leader>o',  group = 'Ollama Config' },
+    { '<leader>om', desc = 'Ollama: Seleccionar modelo' },
+    { '<leader>oc', desc = 'Ollama: Configuración' },
+    { '<leader>ot', desc = 'Ollama: Toggle local/cloud' },
     { '<leader>t',  group = 'Terminal' },
     { '<leader>c',  group = 'Chat/AI' },
     { '<leader>co', desc = 'CopilotChat: Open' },
@@ -902,6 +914,9 @@ vim.keymap.set("n", "<leader>ah", function()
     " <leader>ss       Simplificar código",
     " <leader>cc       Abrir Chat (CodeCompanion)",
     " <leader>ci       Chat en línea (Inline)",
+    " <leader>om       Seleccionar modelo",
+    " <leader>oc       Configuración Ollama",
+    " <leader>ot       Toggle local/cloud",
     " ",
     " [COPILOT CHAT]",
     " <leader>co       Abrir CopilotChat",
