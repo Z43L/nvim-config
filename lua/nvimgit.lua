@@ -160,12 +160,8 @@ function M.safe_quit()
     local has_changes = status_out:match('%S')
 
     if has_changes then
-        -- Ask for commit message (synchronous)
-        local msg = vim.fn.input('Mensaje del commit: ')
-        if msg == '' then
-            vim.notify('Safe quit cancelado: mensaje vacio', vim.log.levels.WARN)
-            return
-        end
+        -- Commit message automatico
+        local msg = 'sincronizado'
 
         vim.notify('Sincronizando y cerrando...', vim.log.levels.INFO)
 
