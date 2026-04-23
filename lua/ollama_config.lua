@@ -12,7 +12,7 @@ local ENV_PATH  = vim.fn.stdpath("config") .. "/.env"
 M._state = {
   mode      = "local",
   local_url = "http://127.0.0.1:11434",
-  cloud_url = "",
+  cloud_url = "https://ollama.com",
   api_key   = nil,
   model     = nil,
 }
@@ -81,7 +81,7 @@ function M.load_config()
   if json then
     if json.mode      ~= nil then M._state.mode      = json.mode end
     if json.local_url ~= nil then M._state.local_url = json.local_url end
-    if json.cloud_url ~= nil then M._state.cloud_url = json.cloud_url end
+    if json.cloud_url ~= nil and #json.cloud_url > 0 then M._state.cloud_url = json.cloud_url end
     if json.model     ~= nil then M._state.model     = json.model end
   end
 
@@ -111,7 +111,7 @@ function M.get_headers()
   if M._state.api_key and #M._state.api_key > 0 then
     return { Authorization = "Bearer " .. M._state.api_key }
   end
-  return {}
+  return nil
 end
 
 -- ============================================================================
@@ -190,29 +190,29 @@ function M.patch_curl()
   -- Returns true if url belongs to our configured endpoint (local or cloud)
   local function is_our_endpoint(url)
     if not url or type(url) ~= "string" then return false end
-    if me._state.api_key and #me._state.api_key > 0 then
-      local active = me.get_url()
-      if active and #active > 0 and vim.startswith(url, active) then
-        return true
-      end
+    local active = me.get_url()
+    if active and #active > 0 and vim.startswith(url, active) then
+      return true
     end
     return false
   end
 
   curl.get = function(url, opts)
     if is_our_endpoint(url) then
-      opts = vim.tbl_deep_extend("force", opts or {}, {
-        headers = me.get_headers()
-      })
+      local h = me.get_headers()
+      if h then
+        opts = vim.tbl_deep_extend("force", opts or {}, { headers = h })
+      end
     end
     return orig_get(url, opts)
   end
 
   curl.post = function(url, opts)
     if is_our_endpoint(url) then
-      opts = vim.tbl_deep_extend("force", opts or {}, {
-        headers = me.get_headers()
-      })
+      local h = me.get_headers()
+      if h then
+        opts = vim.tbl_deep_extend("force", opts or {}, { headers = h })
+      end
     end
     return orig_post(url, opts)
   end
@@ -231,24 +231,28 @@ function M.fetch_models()
   end
 
   local url = active_url .. "/api/tags"
-  local headers = M.get_headers()
+  local h = M.get_headers()
+  local opts = { timeout = 15000 }
+  if h then opts.headers = h end
 
   local ok, res = pcall(function()
-    return require("plenary.curl").get(url, { headers = headers, timeout = 10000 })
+    return require("plenary.curl").get(url, opts)
   end)
 
   if not ok then
-    vim.notify("Error de conexión: " .. tostring(res), vim.log.levels.ERROR)
+    local err = tostring(res)
+    local clean = err:match("stderr=%{(.-)%}") or err:match("curl error exit_code=(%d+)") or err:sub(1, 120)
+    vim.notify("Conexión fallida: " .. clean, vim.log.levels.ERROR)
     return {}
   end
 
-  if not res then
-    vim.notify("Sin respuesta del servidor", vim.log.levels.ERROR)
+  if type(res) ~= "table" then
+    vim.notify("Respuesta inesperada del servidor", vim.log.levels.ERROR)
     return {}
   end
 
   if res.status ~= 200 then
-    local msg = (res.body and #res.body > 0) and ("HTTP " .. res.status .. ": " .. res.body:sub(1, 200)) or ("HTTP " .. res.status)
+    local msg = (res.body and #res.body > 0) and ("HTTP " .. res.status .. ": " .. res.body:sub(1, 200)) or ("HTTP " .. tostring(res.status))
     vim.notify(msg, vim.log.levels.ERROR)
     return {}
   end
@@ -301,7 +305,11 @@ function M.toggle_mode()
   M._state.mode = (M._state.mode == "local") and "cloud" or "local"
   M.apply_to_ollama()
   M.save_config()
-  vim.notify("Ollama modo: " .. M._state.mode .. " (" .. M.get_url() .. ")", vim.log.levels.INFO)
+  local msg = "Ollama modo: " .. M._state.mode .. " (" .. M.get_url() .. ")"
+  if M._state.mode == "cloud" and (not M._state.api_key or #M._state.api_key == 0) then
+    msg = msg .. " — API key no configurada. Usa <leader>oc"
+  end
+  vim.notify(msg, vim.log.levels.INFO)
 end
 
 -- ============================================================================
@@ -323,14 +331,13 @@ function M.configure()
       M.toggle_mode()
 
     elseif idx == 2 then
-      vim.ui.input({ prompt = "API key (cloud): ", default = M._state.api_key or "" }, function(key)
-        if key then
-          M._state.api_key = key
-          write_env("OLLAMA_API_KEY", key)
-          M.apply_to_ollama()
-          vim.notify("API key guardada en .env", vim.log.levels.INFO)
-        end
-      end)
+      local key = vim.fn.inputsecret("API key (cloud): ")
+      if key and #key > 0 then
+        M._state.api_key = key
+        write_env("OLLAMA_API_KEY", key)
+        M.apply_to_ollama()
+        vim.notify("API key guardada en .env", vim.log.levels.INFO)
+      end
 
     elseif idx == 3 then
       vim.ui.input({ prompt = "URL cloud: ", default = M._state.cloud_url or "" }, function(url)
