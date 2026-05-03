@@ -314,15 +314,7 @@ require('lazy').setup({
         'CopilotC-Nvim/CopilotChat.nvim',
         dependencies = {
             { 'nvim-lua/plenary.nvim' },
-            {
-                'zbirenbaum/copilot.lua',
-                config = function()
-                    require('copilot').setup({
-                        panel = { enabled = false },
-                        suggestion = { enabled = false },
-                    })
-                end,
-            },
+            { 'github/copilot.vim' },
         },
         build = 'make tiktoken',
         opts = {
