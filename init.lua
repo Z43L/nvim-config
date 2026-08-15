@@ -683,15 +683,64 @@ map('n', '<leader>nq', function() require('nvimgit').safe_quit() end,
 -- GIT config
 
 map('n', '<leader>gp', function()
+    local root = vim.fn.systemlist('git rev-parse --show-toplevel')[1]
+
+    if vim.v.shell_error ~= 0 or not root then
+        vim.notify('No estás dentro de un repositorio Git', vim.log.levels.ERROR)
+        return
+    end
+
     local msg = vim.fn.input('Commit message: ')
-    if msg == '' then return end
+    if msg == '' then
+        return
+    end
 
-    vim.fn.system('git add -A')
-    vim.fn.system({ 'git', 'commit', '-m', msg })
-    vim.fn.system('git push')
+    local function git(args)
+        local cmd = { 'git', '-C', root }
 
-    vim.notify('Commit + push completado', vim.log.levels.INFO)
+        for _, arg in ipairs(args) do
+            table.insert(cmd, arg)
+        end
+
+        local output = vim.fn.system(cmd)
+
+        if vim.v.shell_error ~= 0 then
+            vim.notify(output, vim.log.levels.ERROR)
+            return false
+        end
+
+        return true
+    end
+
+    if not git({ 'add', '-A' }) then
+        return
+    end
+
+    if not git({ 'commit', '-m', msg }) then
+        return
+    end
+
+    local output = vim.fn.system({
+        'git',
+        '-C',
+        root,
+        'push',
+    })
+
+    if vim.v.shell_error ~= 0 then
+        vim.notify(
+            'Git push ERROR:\n' .. output,
+            vim.log.levels.ERROR
+        )
+        return
+    end
+
+    vim.notify(
+        '✓ Commit + push completado\n' .. output,
+        vim.log.levels.INFO
+    )
 end, { desc = 'Git: Commit + Push repositorio actual' })
+
 
 
 -- Which-key labels
