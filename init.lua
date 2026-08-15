@@ -682,6 +682,79 @@ map('n', '<leader>nq', function() require('nvimgit').safe_quit() end,
 
 -- GIT config
 
+
+-- ============================================================
+-- GitHub credentials desde Neovim
+-- ============================================================
+
+local function github_login()
+    local username = vim.fn.input('GitHub username: ')
+
+    if username == '' then
+        vim.notify('Login cancelado', vim.log.levels.WARN)
+        return
+    end
+
+    -- inputsecret oculta el token mientras lo escribes
+    local token = vim.fn.inputsecret('GitHub token: ')
+
+    if token == '' then
+        vim.notify('Token vacío. Login cancelado.', vim.log.levels.WARN)
+        return
+    end
+
+    -- Guardar credenciales persistentemente
+    vim.fn.system({
+        'git',
+        'config',
+        '--global',
+        'credential.helper',
+        'store'
+    })
+
+    if vim.v.shell_error ~= 0 then
+        vim.notify(
+            'No se pudo configurar credential.helper',
+            vim.log.levels.ERROR
+        )
+        return
+    end
+
+    -- Pasar las credenciales al credential helper.
+    -- El token NO aparece en la línea de comandos.
+    local credential = table.concat({
+        'protocol=https',
+        'host=github.com',
+        'username=' .. username,
+        'password=' .. token,
+        '',
+        ''
+    }, '\n')
+
+    vim.fn.system('git credential approve', credential)
+
+    if vim.v.shell_error ~= 0 then
+        vim.notify(
+            'Error guardando las credenciales de GitHub',
+            vim.log.levels.ERROR
+        )
+        return
+    end
+
+    vim.notify(
+        '✓ Credenciales de GitHub guardadas',
+        vim.log.levels.INFO
+    )
+end
+
+vim.keymap.set(
+    'n',
+    '<leader>gl',
+    github_login,
+    { desc = 'GitHub: configurar login' }
+)
+
+
 map('n', '<leader>gp', function()
     local root = vim.fn.systemlist('git rev-parse --show-toplevel')[1]
 
