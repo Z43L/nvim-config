@@ -128,7 +128,7 @@ require('lazy').setup({
     {
         'williamboman/mason-lspconfig.nvim',
         dependencies = { 'mason.nvim' },
-        opts = { ensure_installed = { 'lua_ls', 'pyright', 'ts_ls', 'bashls', 'html', 'cssls', 'jsonls', 'yamlls' } }
+        opts = { ensure_installed = {  } }
     },
     { 'neovim/nvim-lspconfig' }, -- solo para leer server_configurations (sin framework)
 
@@ -140,28 +140,12 @@ require('lazy').setup({
     { 'L3MON4D3/LuaSnip',            build = 'make install_jsregexp' },
     { 'rafamadriz/friendly-snippets' },
 
-    {
-        'stevearc/conform.nvim',
-        opts = {
-            formatters_by_ft = {
-                lua = { 'stylua' },
-                python = { 'ruff_format' },
-                javascript = { 'prettier' },
-                typescript = { 'prettier' },
-                css = { 'prettier' },
-                html = { 'prettier' },
-                json = { 'jq' },
-                yaml = { 'yamlfmt' },
-            },
-            format_on_save = function(_) return { timeout_ms = 1000, lsp_fallback = true } end,
-        }
-    },
 
     -- Breadcrumbs
-    { 'SmiteshP/nvim-navic', dependencies = 'neovim/nvim-lspconfig' },
+    { 'SmiteshP/nvim-navic',         dependencies = 'neovim/nvim-lspconfig' },
 
     -- LSP progress
-    { 'j-hui/fidget.nvim',   opts = {} },
+    { 'j-hui/fidget.nvim',           opts = {} },
 
     -- Ollama (vendoreado en lua/ollama/ — ver config debajo de lazy.setup)
     -- { 'nomnivore/ollama.nvim', enabled = false },
@@ -608,7 +592,6 @@ map('n', '<leader>rn', vim.lsp.buf.rename, silent)
 map('n', '<leader>ca', vim.lsp.buf.code_action, silent)
 
 -- Formatting (Conform)
-map({ 'n', 'v' }, '<leader>f', function() require('conform').format({ async = true }) end, silent)
 
 -- Comment
 map({ 'n', 'v' }, '<leader>/', function() require('Comment.api').toggle.linewise.current() end, silent)
