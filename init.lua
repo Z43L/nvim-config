@@ -47,7 +47,7 @@ require('lazy').setup({
     -- Theme & UI
     { 'folke/tokyonight.nvim',   lazy = false,  priority = 1000,                              opts = { style = 'night' } },
     {
-        'nvim-lualine/lualine.nvim',                                                                                                                                                           dependencies = { 'nvim-tree/nvim-web-devicons' },                                                                                                                                      opts = function() return { options = { theme = 'tokyonight', globalstatus = true } } end                                                                                           },                                                                                                                                                                                     { 'akinsho/bufferline.nvim', version = '*', dependencies = 'nvim-tree/nvim-web-devicons', opts = {} },                                                                                 { 'rcarriga/nvim-notify',    opts = {} },                                                                                                                                              { 'stevearc/dressing.nvim',  opts = {} },                                                                                                                                              { 'folke/which-key.nvim',    opts = {} },
+        'nvim-lualine/lualine.nvim', dependencies = { 'nvim-tree/nvim-web-devicons' }, opts = function() return { options = { theme = 'tokyonight', globalstatus = true } } end }, { 'akinsho/bufferline.nvim', version = '*', dependencies = 'nvim-tree/nvim-web-devicons', opts = {} }, { 'rcarriga/nvim-notify', opts = {} }, { 'stevearc/dressing.nvim', opts = {} }, { 'folke/which-key.nvim', opts = {} },
 
     -- File explorer
     {
@@ -55,7 +55,8 @@ require('lazy').setup({
         dependencies = 'nvim-tree/nvim-web-devicons',
         config = function()
             require('nvim-tree').setup({
-                view = { width = 34, side = 'left' },                                                                                                                                                  filters = { dotfiles = false },                                                                                                                                                        git = { enable = true },                                                                                                                                                           })                                                                                                                                                                                 end
+                view = { width = 34, side = 'left' }, filters = { dotfiles = false }, git = { enable = true }, })
+        end
     },
 
     -- Finder & fuzzy
@@ -333,17 +334,28 @@ require('lazy').setup({
             local map = vim.keymap.set
             local silent = { silent = true }
 
-            map({ 'n', 'v' }, '<leader>co', '<cmd>CopilotChatOpen<CR>', vim.tbl_extend('force', silent, { desc = 'CopilotChat: Open' }))
-            map({ 'n', 'v' }, '<leader>cq', '<cmd>CopilotChatClose<CR>', vim.tbl_extend('force', silent, { desc = 'CopilotChat: Close' }))
-            map({ 'n', 'v' }, '<leader>ct', '<cmd>CopilotChatToggle<CR>', vim.tbl_extend('force', silent, { desc = 'CopilotChat: Toggle' }))
-            map({ 'n', 'v' }, '<leader>cr', '<cmd>CopilotChatReset<CR>', vim.tbl_extend('force', silent, { desc = 'CopilotChat: Reset' }))
-            map({ 'n', 'v' }, '<leader>cs', '<cmd>CopilotChatStop<CR>', vim.tbl_extend('force', silent, { desc = 'CopilotChat: Stop' }))
-            map('v', '<leader>ce', '<cmd>CopilotChatExplain<CR>', vim.tbl_extend('force', silent, { desc = 'CopilotChat: Explain' }))
-            map('v', '<leader>cf', '<cmd>CopilotChatFix<CR>', vim.tbl_extend('force', silent, { desc = 'CopilotChat: Fix' }))
-            map('v', '<leader>cd', '<cmd>CopilotChatDocs<CR>', vim.tbl_extend('force', silent, { desc = 'CopilotChat: Docs' }))
-            map('v', '<leader>cm', '<cmd>CopilotChatTests<CR>', vim.tbl_extend('force', silent, { desc = 'CopilotChat: Tests' }))
-            map('v', '<leader>cv', '<cmd>CopilotChatReview<CR>', vim.tbl_extend('force', silent, { desc = 'CopilotChat: Review' }))
-            map('v', '<leader>cO', '<cmd>CopilotChatOptimize<CR>', vim.tbl_extend('force', silent, { desc = 'CopilotChat: Optimize' }))
+            map({ 'n', 'v' }, '<leader>co', '<cmd>CopilotChatOpen<CR>',
+                vim.tbl_extend('force', silent, { desc = 'CopilotChat: Open' }))
+            map({ 'n', 'v' }, '<leader>cq', '<cmd>CopilotChatClose<CR>',
+                vim.tbl_extend('force', silent, { desc = 'CopilotChat: Close' }))
+            map({ 'n', 'v' }, '<leader>ct', '<cmd>CopilotChatToggle<CR>',
+                vim.tbl_extend('force', silent, { desc = 'CopilotChat: Toggle' }))
+            map({ 'n', 'v' }, '<leader>cr', '<cmd>CopilotChatReset<CR>',
+                vim.tbl_extend('force', silent, { desc = 'CopilotChat: Reset' }))
+            map({ 'n', 'v' }, '<leader>cs', '<cmd>CopilotChatStop<CR>',
+                vim.tbl_extend('force', silent, { desc = 'CopilotChat: Stop' }))
+            map('v', '<leader>ce', '<cmd>CopilotChatExplain<CR>',
+                vim.tbl_extend('force', silent, { desc = 'CopilotChat: Explain' }))
+            map('v', '<leader>cf', '<cmd>CopilotChatFix<CR>',
+                vim.tbl_extend('force', silent, { desc = 'CopilotChat: Fix' }))
+            map('v', '<leader>cd', '<cmd>CopilotChatDocs<CR>',
+                vim.tbl_extend('force', silent, { desc = 'CopilotChat: Docs' }))
+            map('v', '<leader>cm', '<cmd>CopilotChatTests<CR>',
+                vim.tbl_extend('force', silent, { desc = 'CopilotChat: Tests' }))
+            map('v', '<leader>cv', '<cmd>CopilotChatReview<CR>',
+                vim.tbl_extend('force', silent, { desc = 'CopilotChat: Review' }))
+            map('v', '<leader>cO', '<cmd>CopilotChatOptimize<CR>',
+                vim.tbl_extend('force', silent, { desc = 'CopilotChat: Optimize' }))
 
             -- Quick chat con input
             map({ 'n', 'v' }, '<leader>cp', function()
@@ -355,7 +367,7 @@ require('lazy').setup({
 
             -- Selector de modelo
             local models = {
-                { name = 'GPT-4.1',          id = 'gpt-4.1' },
+                { name = 'GPT-4.1',           id = 'gpt-4.1' },
                 { name = 'GPT-4o',            id = 'gpt-4o' },
                 { name = 'o3-mini',           id = 'o3-mini' },
                 { name = 'o1',                id = 'o1' },
@@ -439,7 +451,7 @@ require('mason').setup()
 require('mason-lspconfig').setup()
 
 -- Lista de servers
-local servers = { 'ts_ls', 'pyright', 'lua_ls', 'bashls', 'html', 'cssls', 'jsonls', 'yamlls' }
+local servers = {}
 
 -- Para cada server, usamos la definición de nvim-lspconfig/server_configurations
 for _, server in ipairs(servers) do
@@ -505,7 +517,8 @@ vim.diagnostic.config({
 local cmp = require('cmp')
 local luasnip = require('luasnip')
 require('luasnip.loaders.from_vscode').lazy_load()
-local lua_snippets_ok = pcall(require('luasnip.loaders.from_lua').lazy_load, { paths = vim.fn.stdpath('config') .. '/snippets' })
+local lua_snippets_ok = pcall(require('luasnip.loaders.from_lua').lazy_load,
+    { paths = vim.fn.stdpath('config') .. '/snippets' })
 if not lua_snippets_ok then
     vim.notify('Error cargando snippets LuaSnip: algunos archivos pueden estar corruptos', vim.log.levels.WARN)
 end
@@ -550,6 +563,8 @@ cmp.setup.cmdline(':', {
     mapping = cmp.mapping.preset.cmdline(),
     sources = cmp.config.sources({ { name = 'path' } }, { { name = 'cmdline' } })
 })
+
+
 
 -- ---------------------------------------------------------------------
 -- Keymaps (leader = space)
@@ -638,22 +653,46 @@ map('n', '<leader>cc', '<cmd>CodeCompanionChatToggle<CR>', silent)
 map('v', '<leader>ci', '<cmd>CodeCompanionInline<CR>', silent)
 
 -- Snippets personalizados (LuaSnip nativo)
-map('v', '<leader>sy', function() require('snippets').save_visual() end, vim.tbl_extend('force', silent, { desc = 'Snippets: Guardar selección' }))
-map('n', '<leader>sp', function() require('snippets').pick() end, vim.tbl_extend('force', silent, { desc = 'Snippets: Buscar y expandir' }))
-map('n', '<leader>se', function() require('snippets').edit() end, vim.tbl_extend('force', silent, { desc = 'Snippets: Editar archivo' }))
-map('n', '<leader>sd', function() require('snippets').delete() end, vim.tbl_extend('force', silent, { desc = 'Snippets: Borrar' }))
+map('v', '<leader>sy', function() require('snippets').save_visual() end,
+    vim.tbl_extend('force', silent, { desc = 'Snippets: Guardar selección' }))
+map('n', '<leader>sp', function() require('snippets').pick() end,
+    vim.tbl_extend('force', silent, { desc = 'Snippets: Buscar y expandir' }))
+map('n', '<leader>se', function() require('snippets').edit() end,
+    vim.tbl_extend('force', silent, { desc = 'Snippets: Editar archivo' }))
+map('n', '<leader>sd', function() require('snippets').delete() end,
+    vim.tbl_extend('force', silent, { desc = 'Snippets: Borrar' }))
 
 -- Docstring generator (neogen)
-map('n', '<leader>dg', function() require('neogen').generate() end, vim.tbl_extend('force', silent, { desc = 'Generar docstring' }))
+map('n', '<leader>dg', function() require('neogen').generate() end,
+    vim.tbl_extend('force', silent, { desc = 'Generar docstring' }))
 
 -- Neovim config git sync
-map('n', '<leader>ns', function() require('nvimgit').status() end, vim.tbl_extend('force', silent, { desc = 'Git: Status' }))
-map('n', '<leader>na', function() require('nvimgit').add_all() end, vim.tbl_extend('force', silent, { desc = 'Git: Add all' }))
-map('n', '<leader>nc', function() require('nvimgit').commit() end, vim.tbl_extend('force', silent, { desc = 'Git: Commit' }))
+map('n', '<leader>ns', function() require('nvimgit').status() end,
+    vim.tbl_extend('force', silent, { desc = 'Git: Status' }))
+map('n', '<leader>na', function() require('nvimgit').add_all() end,
+    vim.tbl_extend('force', silent, { desc = 'Git: Add all' }))
+map('n', '<leader>nc', function() require('nvimgit').commit() end,
+    vim.tbl_extend('force', silent, { desc = 'Git: Commit' }))
 map('n', '<leader>np', function() require('nvimgit').push() end, vim.tbl_extend('force', silent, { desc = 'Git: Push' }))
 map('n', '<leader>nl', function() require('nvimgit').pull() end, vim.tbl_extend('force', silent, { desc = 'Git: Pull' }))
-map('n', '<leader>ny', function() require('nvimgit').sync() end, vim.tbl_extend('force', silent, { desc = 'Git: Sync (pull+commit+push)' }))
-map('n', '<leader>nq', function() require('nvimgit').safe_quit() end, vim.tbl_extend('force', silent, { desc = 'Git: Guardar, sync y salir' }))
+map('n', '<leader>ny', function() require('nvimgit').sync() end,
+    vim.tbl_extend('force', silent, { desc = 'Git: Sync (pull+commit+push)' }))
+map('n', '<leader>nq', function() require('nvimgit').safe_quit() end,
+    vim.tbl_extend('force', silent, { desc = 'Git: Guardar, sync y salir' }))
+
+-- GIT config
+
+map('n', '<leader>gp', function()
+    local msg = vim.fn.input('Commit message: ')
+    if msg == '' then return end
+
+    vim.fn.system('git add -A')
+    vim.fn.system({ 'git', 'commit', '-m', msg })
+    vim.fn.system('git push')
+
+    vim.notify('Commit + push completado', vim.log.levels.INFO)
+end, { desc = 'Git: Commit + Push repositorio actual' })
+
 
 -- Which-key labels
 local wk = require('which-key')
@@ -783,7 +822,7 @@ vim.keymap.set("n", "<leader>lh", function()
         buffer = popup.bufnr,
         callback = function()
             vim.fn.matchadd("Title", [=[^\s*\[.*\]]=])
-            vim.fn.matchadd("Keyword", [[^\s*\w\+]]) -- Resaltar los comandos (primera palabra)
+            vim.fn.matchadd("Keyword", [[^\s*\w\+]])  -- Resaltar los comandos (primera palabra)
             vim.fn.matchadd("Comment", [[Same as.*]]) -- Resaltar notas secundarias
         end,
     })
@@ -816,158 +855,158 @@ pcall(function() require('telescope').load_extension('projects') end)
 -- Muestra todos los atajos de teclado configurados
 -- =====================================================================
 vim.keymap.set("n", "<leader>ah", function()
-  local ok, Popup = pcall(require, "nui.popup")
-  if not ok then
-    vim.notify("nui.nvim no encontrado.", vim.log.levels.ERROR)
-    return
-  end
+    local ok, Popup = pcall(require, "nui.popup")
+    if not ok then
+        vim.notify("nui.nvim no encontrado.", vim.log.levels.ERROR)
+        return
+    end
 
-  local event = require("nui.utils.autocmd").event
+    local event = require("nui.utils.autocmd").event
 
-  local popup = Popup({
-    enter = true,
-    focusable = true,
-    border = {
-      style = "rounded",
-      text = {
-        top = " Configuración Neovim Pro ",
-        top_align = "center",
-      },
-    },
-    position = "50%",
-    size = {
-      width = "90",
-      height = "85%",
-    },
-  })
+    local popup = Popup({
+        enter = true,
+        focusable = true,
+        border = {
+            style = "rounded",
+            text = {
+                top = " Configuración Neovim Pro ",
+                top_align = "center",
+            },
+        },
+        position = "50%",
+        size = {
+            width = "90",
+            height = "85%",
+        },
+    })
 
-  local content = {
-    " ATAJO            ACCIÓN",
-    " ──────────────────────────────────────────────────────────────────",
-    " [GENERAL]",
-    " <C-s>            Guardar archivo (Modo normal/insert/visual)",
-    " <leader>w        Guardar archivo",
-    " <leader>q        Cerrar ventana/buffer",
-    " <leader>e        Abrir/Cerrar Explorador de Archivos (NvimTree)",
-    " <leader>et       Crear archivo (popup con TAB-completion)",
-    " <leader>ek       Crear directorio (popup con TAB-completion)",
-    " ",
-    " [BUSCADOR (TELESCOPE)]",
-    " <leader>ff       Buscar archivos (Find Files)",
-    " <leader>fg       Buscar texto en proyecto (Live Grep)",
-    " <leader>fb       Buscar en buffers abiertos",
-    " <leader>fh       Ayuda de neovim (Help Tags)",
-    " <leader>pp       Cambiar de proyecto",
-    " ",
-    " [VENTANAS]",
-    " <leader>sv       Dividir verticalmente  (|)",
-    " <leader>sh       Dividir horizontalmente (-)",
-    " <leader>se       Igualar tamaño de ventanas",
-    " <leader>sx       Cerrar división actual",
-    " ",
-    " [LSP & CÓDIGO]",
-    " gd               Ir a definición",
-    " gr               Ir a referencias",
-    " gi               Ir a implementación",
-    " K                Ver documentación (Hover)",
-    " <leader>rn       Renombrar variable/función",
-    " <leader>ca       Acciones de código (Code Action)",
-    " <leader>f        Formatear código (Prettier/Ruff/etc)",
-    " <leader>al       Comentar/Descomentar línea o bloque (<leader>+/)",
-    " ",
-    " [DIAGNÓSTICOS]",
-    " [d / ]d          Ir al error anterior / siguiente",
-    " <leader>do       Ver error en ventana flotante",
-    " <leader>dl       Ver lista de errores (Trouble)",
-    " <leader>xx       Alternar panel de errores (Trouble)",
-    " ",
-    " [GIT]",
-    " <leader>gb       Ver quién modificó la línea (Blame)",
-    " <leader>gd       Ver diferencias (Diff)",
-    " ",
-    " [INTELIGENCIA ARTIFICIAL (OLLAMA)]",
-    " <leader>p        Prompt genérico (Normal y Visual)",
-    " <leader>aa       Preguntar sobre el código (Ask)",
-    " <leader>ee       Explicar código seleccionado",
-    " <leader>gg       Generar código",
-    " <leader>mm       Modificar/Refactorizar código",
-    " <leader>ss       Simplificar código",
-    " <leader>cc       Abrir Chat (CodeCompanion)",
-    " <leader>ci       Chat en línea (Inline)",
-    " <leader>om       Seleccionar modelo",
-    " <leader>oc       Configuración Ollama",
-    " <leader>ot       Toggle local/cloud",
-    " ",
-    " [COPILOT CHAT]",
-    " <leader>co       Abrir CopilotChat",
-    " <leader>ct       Toggle CopilotChat",
-    " <leader>cp       Quick prompt (input libre)",
-    " <leader>ce       Explicar selección",
-    " <leader>cf       Fix selección",
-    " <leader>cd       Generar docs selección",
-    " <leader>cm       Generar tests selección",
-    " <leader>cv       Review selección",
-    " <leader>cO       Optimizar selección",
-    " <leader>cM       Cambiar modelo de CopilotChat",
-    " ",
-    " [SNIPPETS PERSONALIZADOS]",
-    " <leader>sy       Guardar selección como snippet (modo visual)",
-    " <leader>sp       Buscar snippet (popup editable: c copiar, Enter insertar)",
-    " <leader>se       Editar archivo de snippets del filetype",
-    " <leader>sd       Borrar snippet (picker + confirm)",
-    " ",
-    " [DOCSTRINGS]",
-    " <leader>dg       Generar docstring (Python/C/C++/Java/JS/Go...)",
-    " ",
-    " [LEETCODE]",
-    " <leader>lh       Ver menú de ayuda exclusivo de LeetCode",
-    " :Leet            Abrir Dashboard",
-    " ",
-    " [NVIM CONFIG (GIT)]",
-    " <leader>ns       Git status",
-    " <leader>na       Git add all",
-    " <leader>nc       Git commit",
-    " <leader>np       Git push",
-    " <leader>nl       Git pull",
-    " <leader>ny       Git sync (pull+commit+push)",
-    " <leader>nq       Guardar todo, sync git y salir de Neovim",
-    " ",
-    " [SESIONES & TERMINAL]",
-    " <leader>ss       Restaurar sesión actual",
-    " <leader>sl       Restaurar última sesión",
-    " <leader>sd       Detener grabación de sesión",
-    " <leader>tt       Abrir/Cerrar Terminal flotante",
-    " <C-`>            Abrir/Cerrar Terminal flotante",
-    " ",
-    " [SALIR]",
-    " q / <Esc>        Cerrar esta ayuda",
-  }
+    local content = {
+        " ATAJO            ACCIÓN",
+        " ──────────────────────────────────────────────────────────────────",
+        " [GENERAL]",
+        " <C-s>            Guardar archivo (Modo normal/insert/visual)",
+        " <leader>w        Guardar archivo",
+        " <leader>q        Cerrar ventana/buffer",
+        " <leader>e        Abrir/Cerrar Explorador de Archivos (NvimTree)",
+        " <leader>et       Crear archivo (popup con TAB-completion)",
+        " <leader>ek       Crear directorio (popup con TAB-completion)",
+        " ",
+        " [BUSCADOR (TELESCOPE)]",
+        " <leader>ff       Buscar archivos (Find Files)",
+        " <leader>fg       Buscar texto en proyecto (Live Grep)",
+        " <leader>fb       Buscar en buffers abiertos",
+        " <leader>fh       Ayuda de neovim (Help Tags)",
+        " <leader>pp       Cambiar de proyecto",
+        " ",
+        " [VENTANAS]",
+        " <leader>sv       Dividir verticalmente  (|)",
+        " <leader>sh       Dividir horizontalmente (-)",
+        " <leader>se       Igualar tamaño de ventanas",
+        " <leader>sx       Cerrar división actual",
+        " ",
+        " [LSP & CÓDIGO]",
+        " gd               Ir a definición",
+        " gr               Ir a referencias",
+        " gi               Ir a implementación",
+        " K                Ver documentación (Hover)",
+        " <leader>rn       Renombrar variable/función",
+        " <leader>ca       Acciones de código (Code Action)",
+        " <leader>f        Formatear código (Prettier/Ruff/etc)",
+        " <leader>al       Comentar/Descomentar línea o bloque (<leader>+/)",
+        " ",
+        " [DIAGNÓSTICOS]",
+        " [d / ]d          Ir al error anterior / siguiente",
+        " <leader>do       Ver error en ventana flotante",
+        " <leader>dl       Ver lista de errores (Trouble)",
+        " <leader>xx       Alternar panel de errores (Trouble)",
+        " ",
+        " [GIT]",
+        " <leader>gb       Ver quién modificó la línea (Blame)",
+        " <leader>gd       Ver diferencias (Diff)",
+        " ",
+        " [INTELIGENCIA ARTIFICIAL (OLLAMA)]",
+        " <leader>p        Prompt genérico (Normal y Visual)",
+        " <leader>aa       Preguntar sobre el código (Ask)",
+        " <leader>ee       Explicar código seleccionado",
+        " <leader>gg       Generar código",
+        " <leader>mm       Modificar/Refactorizar código",
+        " <leader>ss       Simplificar código",
+        " <leader>cc       Abrir Chat (CodeCompanion)",
+        " <leader>ci       Chat en línea (Inline)",
+        " <leader>om       Seleccionar modelo",
+        " <leader>oc       Configuración Ollama",
+        " <leader>ot       Toggle local/cloud",
+        " ",
+        " [COPILOT CHAT]",
+        " <leader>co       Abrir CopilotChat",
+        " <leader>ct       Toggle CopilotChat",
+        " <leader>cp       Quick prompt (input libre)",
+        " <leader>ce       Explicar selección",
+        " <leader>cf       Fix selección",
+        " <leader>cd       Generar docs selección",
+        " <leader>cm       Generar tests selección",
+        " <leader>cv       Review selección",
+        " <leader>cO       Optimizar selección",
+        " <leader>cM       Cambiar modelo de CopilotChat",
+        " ",
+        " [SNIPPETS PERSONALIZADOS]",
+        " <leader>sy       Guardar selección como snippet (modo visual)",
+        " <leader>sp       Buscar snippet (popup editable: c copiar, Enter insertar)",
+        " <leader>se       Editar archivo de snippets del filetype",
+        " <leader>sd       Borrar snippet (picker + confirm)",
+        " ",
+        " [DOCSTRINGS]",
+        " <leader>dg       Generar docstring (Python/C/C++/Java/JS/Go...)",
+        " ",
+        " [LEETCODE]",
+        " <leader>lh       Ver menú de ayuda exclusivo de LeetCode",
+        " :Leet            Abrir Dashboard",
+        " ",
+        " [NVIM CONFIG (GIT)]",
+        " <leader>ns       Git status",
+        " <leader>na       Git add all",
+        " <leader>nc       Git commit",
+        " <leader>np       Git push",
+        " <leader>nl       Git pull",
+        " <leader>ny       Git sync (pull+commit+push)",
+        " <leader>nq       Guardar todo, sync git y salir de Neovim",
+        " ",
+        " [SESIONES & TERMINAL]",
+        " <leader>ss       Restaurar sesión actual",
+        " <leader>sl       Restaurar última sesión",
+        " <leader>sd       Detener grabación de sesión",
+        " <leader>tt       Abrir/Cerrar Terminal flotante",
+        " <C-`>            Abrir/Cerrar Terminal flotante",
+        " ",
+        " [SALIR]",
+        " q / <Esc>        Cerrar esta ayuda",
+    }
 
-  popup:mount()
-  vim.api.nvim_buf_set_lines(popup.bufnr, 0, 1, false, content)
+    popup:mount()
+    vim.api.nvim_buf_set_lines(popup.bufnr, 0, 1, false, content)
 
-  -- Configuración del buffer
-  vim.api.nvim_set_option_value("modifiable", false, { buf = popup.bufnr })
-  vim.api.nvim_set_option_value("readonly", true, { buf = popup.bufnr })
-  vim.api.nvim_set_option_value("filetype", "nvim-help", { buf = popup.bufnr })
+    -- Configuración del buffer
+    vim.api.nvim_set_option_value("modifiable", false, { buf = popup.bufnr })
+    vim.api.nvim_set_option_value("readonly", true, { buf = popup.bufnr })
+    vim.api.nvim_set_option_value("filetype", "nvim-help", { buf = popup.bufnr })
 
-  -- Resaltado de sintaxis (Usando comillas normales para evitar errores)
-  vim.api.nvim_create_autocmd("FileType", {
-    buffer = popup.bufnr,
-    callback = function()
-      -- Regex: Corchetes al inicio (ej: [GIT])
-      vim.fn.matchadd("Title", "^\\s*\\[.*\\]")
-      -- Regex: Teclas especiales entre <> (ej: <leader>)
-      vim.fn.matchadd("Special", "<[^>]\\+>")
-      -- Regex: Palabras clave al inicio (ej: gd)
-      vim.fn.matchadd("String", "^\\s*\\w\\+")
-      -- Regex: Comentarios
-      vim.fn.matchadd("Comment", "Same as.*")
-    end,
-  })
+    -- Resaltado de sintaxis (Usando comillas normales para evitar errores)
+    vim.api.nvim_create_autocmd("FileType", {
+        buffer = popup.bufnr,
+        callback = function()
+            -- Regex: Corchetes al inicio (ej: [GIT])
+            vim.fn.matchadd("Title", "^\\s*\\[.*\\]")
+            -- Regex: Teclas especiales entre <> (ej: <leader>)
+            vim.fn.matchadd("Special", "<[^>]\\+>")
+            -- Regex: Palabras clave al inicio (ej: gd)
+            vim.fn.matchadd("String", "^\\s*\\w\\+")
+            -- Regex: Comentarios
+            vim.fn.matchadd("Comment", "Same as.*")
+        end,
+    })
 
-  -- Cerrar
-  popup:map("n", "q", function() popup:unmount() end, { noremap = true })
-  popup:map("n", "<Esc>", function() popup:unmount() end, { noremap = true })
-  popup:on(event.BufLeave, function() popup:unmount() end)
+    -- Cerrar
+    popup:map("n", "q", function() popup:unmount() end, { noremap = true })
+    popup:map("n", "<Esc>", function() popup:unmount() end, { noremap = true })
+    popup:on(event.BufLeave, function() popup:unmount() end)
 end, { desc = "Ayuda Global / Cheatsheet" })
